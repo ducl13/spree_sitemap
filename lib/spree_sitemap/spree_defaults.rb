@@ -63,8 +63,24 @@ module SpreeSitemap::SpreeDefaults
   end
 
   def add_taxon(taxon, options = {})
-    add(nested_taxons_path(taxon.permalink), options.merge(lastmod: taxon.products.last_updated)) if taxon.permalink.present?
-    taxon.children.each { |child| add_taxon(child, options) }
+    #add(nested_taxons_path(taxon.permalink), options.merge(lastmod: taxon.products.last_updated)) if taxon.permalink.present?
+
+    TAXON_FEATURED = 'Featured'
+    
+    # Ignore Featured taxon
+    # Modified: use seo_url call in base_helper_decorator.rb which uses /category/ path instead of /t/
+    if !taxon.name.casecmp(TAXON_FEATURED).zero?
+      add(seo_url(taxon), options.merge(lastmod: taxon.products.last_updated)) if taxon.permalink.present?
+      taxon.children.each { |child| add_taxon(child, options) }
+    end
+  end
+
+  # Add for PagesController pages
+  def add_static_pages(options = {})
+    add(about_us_path, options)
+    add(faq_path, options)
+    add(privacy_policy_path, options)
+    add(terms_of_use_path, options)
   end
 
   def gem_available?(name)
