@@ -67,7 +67,7 @@ module SpreeSitemap::SpreeDefaults
 
     # Ignore Featured taxon
     # Modified: use seo_url call in base_helper_decorator.rb which uses /category/ path instead of /t/
-    if !taxon.name.casecmp('featured').zero?
+    if !taxon.name.casecmp('featured').zero? && !taxon.noindex
       add(seo_url(taxon), options.merge(lastmod: taxon.products.last_updated)) if taxon.permalink.present?
       taxon.children.each { |child| add_taxon(child, options) }
     end
